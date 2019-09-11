@@ -23,7 +23,7 @@ exports.handler = (event, context, callback) => {
             N: date.getTime().toString()
         }
     },
-    filterExpression = "dt <= :date",            // day filter expression 
+    filterExpression = "dt >= :date",            // day filter expression 
     expressionAttrValuesBeforeFilterDay = {     // same time past fromthe day filter expressoion attr
         ":date": {
             N: date.getTime().toString()
@@ -239,15 +239,17 @@ let getDataForTopSalesRep = (dynamodb, date, filterExpression, expressionAttrVal
                     console.log("res---111-", callsItems[0]);
                     
                     // incase of top value change -> assign top value pos to 2nd top pos and update top pos 
-                    if(top[0].demoCalls <= calls && calls > 0) {
+                    if(top[0].demoCalls <= calls) {
                         top[1].demoCalls = top[0].demoCalls;
                         top[1].newLogos = top[0].newLogos ;
                         top[1].name = top[0].name;
                         top[1].salesRepId = top[0].salesRepId;
                         top[0].demoCalls = calls;
                         top[0].newLogos = clientsNew ;
-                        top[0].name = callsItems[0].salesRep.S;
-                        top[0].salesRepId = callsItems[0].salesRepId.N
+                        if(calls) top[0].name = callsItems[0].salesRep.S;
+                        else if(clientsNew) top[0].name = clientsItems[0].salesRep.S;
+                        if(calls) top[0].salesRepId = callsItems[0].salesRepId.N;
+                        else if(clientsNew) top[0].salesRepId = clientsItems[0].salesRepId.N;
                     }
                     if(top[1].demoCalls < calls && top[0].demoCalls > calls) {
                         top[1].demoCalls = calls;
@@ -257,15 +259,17 @@ let getDataForTopSalesRep = (dynamodb, date, filterExpression, expressionAttrVal
                     }
                     
                     // incase of top value change -> assign top value pos to 2nd top pos and update top pos
-                    if(bottom[0].demoCalls >= calls && calls > 0) {
+                    if(bottom[0].demoCalls >= calls) {
                         bottom[1].demoCalls = bottom[0].demoCalls;
                         bottom[1].newLogos = bottom[0].newLogos ;
                         bottom[1].name = bottom[0].name;
                         bottom[1].salesRepId = bottom[0].salesRepId;
                         bottom[0].demoCalls = calls;
                         bottom[0].newLogos = clientsNew ;
-                        bottom[0].name = callsItems[0].salesRep.S;
-                        bottom[0].salesRepId = callsItems[0].salesRepId.N
+                        if(calls) bottom[0].name = callsItems[0].salesRep.S;
+                        else if(clientsNew) bottom[0].name = clientsItems[0].salesRep.S;
+                        if(calls) bottom[0].salesRepId = callsItems[0].salesRepId.N;
+                        else if(clientsNew) bottom[0].salesRepId = clientsItems[0].salesRepId.N;
                     }
                     if(bottom[1].demoCalls > calls && bottom[0].demoCalls < calls) {
                         bottom[1].demoCalls = calls;
