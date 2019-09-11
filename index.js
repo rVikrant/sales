@@ -97,6 +97,7 @@ exports.handler = (event, context, callback) => {
     
 }
 
+//-----------------------------> please make new util functions file , exports these below functions from there and import in this file
 // dynamod scan query 
 let getDataFromDB = (dynamodb,filterExpression, expressionAttrValues) => {
     return new Promise((resolve, reject) => {
